@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sales Summary 1</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="container py-5">
+    <div class="text-center mb-4">
+      <h1 id="page-title" class="h3 mb-0">Sales Summary 1</h1>
+    </div>
+    <div class="card mx-auto" style="max-width: 420px;">
+      <div class="card-body text-center">
+        <h5 class="card-title mb-3">Total Sales</h5>
+        <div id="total-sales" class="display-4 fw-bold">0</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Ensure the title is set as required
+    document.title = 'Sales Summary 1';
+
+    (async function() {
+      const totalEl = document.getElementById('total-sales');
+      try {
+        const resp = await fetch('data.csv');
+        if (!resp.ok) {
+          totalEl.textContent = 'Data not found';
+          return;
+        }
+        const text = await resp.text();
+
+        // Minimal CSV parsing
+        const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+        if (lines.length === 0) {
+          totalEl.textContent = 'No data';
+          return;
+        }
+
+        // Header line
+        let headerLine = lines[0].trim();
+        // Remove BOM if present
+        headerLine = headerLine.replace(/^\ufeff/, '');
+        // Split headers, taking into account quoted values
+        const headers = headerLine.split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+        let idx = headers.findIndex(h => h === 'Sales(Rs.)');
+        if (idx < 0) {
+          // try case-insensitive match
+          idx = headers.findIndex(h => h.toLowerCase() === 'sales(rs.)' || h.toLowerCase() === 'sales');
+        }
+        if (idx < 0) {
+          totalEl.textContent = 'Sales column not found';
+          return;
+        }
+
+        let sum = 0;
+        for (let i = 1; i < lines.length; i++) {
+          const line = lines[i].trim();
+          if (!line) continue;
+          // split by comma; naive but acceptable for simple CSV
+          const cols = line.split(',');
+          const raw = cols[idx] ?? '';
+          const val = parseFloat(raw.trim().replace(/^\$?/, ''));
+          if (!Number.isNaN(val)) sum += val;
+        }
+
+        totalEl.textContent = sum.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+      } catch (err) {
+        totalEl.textContent = 'Error';
+        console.error(err);
+      }
+    })();
+  </script>
+</body>
+</html>
