@@ -1,11 +1,15 @@
-# Auto App Generator
+# Auto App Generator - Revised Version 2
 
 ## Summary
 
 This FastAPI-based service receives a request with a **brief** describing an app to build. It uses an **LLM** to generate code, deploys the app to **GitHub Pages**, and notifies an evaluation API. Each request can result in a unique app.
 
 **Example Brief:**  
-_Publish a single-page site that fetches data.csv from attachments, sums its sales column, sets the title to 'Sales Summary 1', displays the total inside #total-sales, and loads Bootstrap 5 from jsdelivr._
+_Introduce a currency select #currency-picker that converts the computed total using rates.json from attachments and mirrors the active currency inside #total-currency._
+
+## Revised Version  
+
+A second request was made to the api to modify this app to include the changes given in the brief above.  
 
 ## Setup
 
@@ -32,8 +36,7 @@ pip install -r requirements.txt
 
 ## Usage
 
-Send a POST to /api-endpoint with a JSON body like:  
-
+Send a POST to /api-endpoint with a JSON body like
 
 The app validates the secret, uses LLM to build the app, pushes it to GitHub Pages, and pings the evaluation API.
 
