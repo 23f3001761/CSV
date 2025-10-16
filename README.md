@@ -5,7 +5,7 @@
 This FastAPI-based service receives a request with a **brief** describing an app to build. It uses an **LLM** to generate code, deploys the app to **GitHub Pages**, and notifies an evaluation API. Each request can result in a unique app.
 
 **Example Brief:**  
-_Introduce a currency select #currency-picker that converts the computed total using rates.json from attachments and mirrors the active currency inside #total-currency._
+_Add a Bootstrap table #product-sales that lists each product with its total sales and keeps #total-sales accurate after render._
 
 ## Revised Version  
 
